@@ -13,9 +13,13 @@ function index(req, res) {
     INNER JOIN movies.reviews
     ON movies.id = reviews.movie_id
     GROUP BY movies.id`;
-  connection.query(moviesSQL, (err, result) => {
+  connection.query(moviesSQL, (err, movieResult) => {
     if (err) return handleFailedQuery(err, res);
-    res.json({ result });
+    const movies = movieResult.map((movie) => ({
+      ...movie,
+      image: buildMovieImgPath(movie.image),
+    }));
+    res.json({ result: movies });
   });
 }
 
@@ -39,6 +43,7 @@ function show(req, res) {
     connection.query(reviewSQL, [id], (err, reviewResult) => {
       if (err) return handleFailedQuery(err, res);
       movie.reviews = reviewResult;
+      movie.image = buildMovieImgPath(movie.image);
 
       res.json({ result: movie });
     });
@@ -62,3 +67,7 @@ function destroy(req, res) {
 }
 
 module.exports = { index, show, store, update, modify, destroy };
+
+function buildMovieImgPath(image) {
+  return `${process.env.APP_URL}:${process.env.APP_PORT}/img/movies_cover/${image}`;
+}
