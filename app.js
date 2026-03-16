@@ -7,37 +7,13 @@ app.use(logger);
 app.use(express.static("public"));
 app.use(express.json());
 
-// # TEST ROUTE
+// # ROUTES
+const globalRouter = require("./routers/globalRouter");
+const movieRouter = require("./routers/movieRouter");
+app.use(globalRouter);
+app.use("/movies", movieRouter);
 
-const connection = require("./database/conn");
-
-app.get("/", (req, res) => {
-  const moviesSQL = "SELECT * FROM `movies`";
-  connection.query(moviesSQL, (err, result) => {
-    if (err) {
-      const responseData = {
-        message: "Database query failed",
-      };
-
-      if (process.env.APP_MODE === "dev") {
-        responseData.error = err.message;
-      }
-
-      console.log(err.message);
-      return res.status(500).json(responseData);
-    }
-
-    console.log(result);
-    res.send("Hello world");
-  });
-});
-
-app.get("/test-error", (req, res) => {
-  a.b;
-  res.send("Hello world");
-});
-
-// # ERROR HANDLING
+// # ERROR MIDDLEWARES
 const errorMiddleware = require("./middlewares/errorHandlers");
 app.use(errorMiddleware.error404);
 app.use(errorMiddleware.error500);
