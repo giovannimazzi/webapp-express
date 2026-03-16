@@ -1,0 +1,30 @@
+{
+  "name": "webapp-express",
+  "version": "1.0.0",
+  "description": "Backend API Express Movies",
+  "keywords": [
+    "Express",
+    "API",
+    "SQL"
+  ],
+  "homepage": "https://github.com/giovannimazzi/webapp-express#readme",
+  "bugs": {
+    "url": "https://github.com/giovannimazzi/webapp-express/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giovannimazzi/webapp-express.git"
+  },
+  "license": "ISC",
+  "author": "giovannimazzi",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "watch": "node --watch app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
