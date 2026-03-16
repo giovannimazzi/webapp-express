@@ -1,14 +1,7 @@
 const express = require("express");
-const connection = require("../database/conn");
-const { handleFailedQuery } = require("../utils/database");
 const router = express.Router();
+const movieController = require("../controllers/movieController");
 
-router.get("/", (req, res) => {
-  const moviesSQL = "SELECT * FROM `movies`";
-  connection.query(moviesSQL, (err, result) => {
-    if (err) return handleFailedQuery(err, res);
-    res.json({ result });
-  });
-});
+router.get("/", movieController.index);
 
 module.exports = router;
