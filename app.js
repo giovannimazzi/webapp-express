@@ -12,7 +12,7 @@ app.use(express.json());
 const connection = require("./database/conn");
 
 app.get("/", (req, res) => {
-  const moviesSQL = "SELECT * FR OM `movies`";
+  const moviesSQL = "SELECT * FROM `movies`";
   connection.query(moviesSQL, (err, result) => {
     if (err) {
       const responseData = {
