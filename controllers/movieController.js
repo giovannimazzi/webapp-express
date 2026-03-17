@@ -17,6 +17,7 @@ function index(req, res) {
     if (err) return handleFailedQuery(err, res);
     const movies = movieResult.map((movie) => ({
       ...movie,
+      avg_vote: parseInt(movie.avg_vote),
       image: buildMovieImgPath(movie.image),
     }));
     res.json({ result: movies });
@@ -43,6 +44,7 @@ function show(req, res) {
     connection.query(reviewSQL, [id], (err, reviewResult) => {
       if (err) return handleFailedQuery(err, res);
       movie.reviews = reviewResult;
+      movie.avg_vote = parseInt(movie.avg_vote);
       movie.image = buildMovieImgPath(movie.image);
 
       res.json({ result: movie });
