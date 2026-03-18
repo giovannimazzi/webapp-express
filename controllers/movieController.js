@@ -7,8 +7,12 @@ const {
 function index(req, res) {
   const moviesSQL = `
     SELECT 
-        movies.*,
-        AVG(reviews.vote) avg_vote
+        movies.id,
+        movies.title,
+        movies.director,
+        movies.abstract,
+        movies.image,
+        AVG(reviews.vote) average_vote
     FROM movies.movies
     INNER JOIN movies.reviews
     ON movies.id = reviews.movie_id
@@ -17,7 +21,7 @@ function index(req, res) {
     if (err) return handleFailedQuery(err, res);
     const movies = movieResult.map((movie) => ({
       ...movie,
-      avg_vote: parseInt(movie.avg_vote),
+      average_vote: parseFloat(movie.average_vote),
       image: buildMovieImgPath(movie.image),
     }));
     res.json({ result: movies });
@@ -27,14 +31,9 @@ function index(req, res) {
 function show(req, res) {
   const { id } = req.params;
   const moviesSQL = `
-    SELECT 
-        movies.*,
-        AVG(reviews.vote) avg_vote
+    SELECT movies.*   
     FROM movies.movies
-    INNER JOIN movies.reviews
-    ON movies.id = reviews.movie_id
-    WHERE movies.id = ?
-    GROUP BY movies.id`;
+    WHERE movies.id = ?`;
   connection.query(moviesSQL, [id], (err, movieResult) => {
     if (err) return handleFailedQuery(err, res);
     const movie = movieResult[0];
@@ -44,7 +43,6 @@ function show(req, res) {
     connection.query(reviewSQL, [id], (err, reviewResult) => {
       if (err) return handleFailedQuery(err, res);
       movie.reviews = reviewResult;
-      movie.avg_vote = parseInt(movie.avg_vote);
       movie.image = buildMovieImgPath(movie.image);
 
       res.json({ result: movie });
