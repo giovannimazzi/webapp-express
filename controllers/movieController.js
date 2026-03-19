@@ -14,7 +14,7 @@ function index(req, res) {
         movies.image,
         AVG(reviews.vote) average_vote
     FROM movies.movies
-    INNER JOIN movies.reviews
+    LEFT JOIN movies.reviews
     ON movies.id = reviews.movie_id
     GROUP BY movies.id`;
   connection.query(moviesSQL, (err, movieResult) => {
@@ -55,7 +55,22 @@ function show(req, res) {
 }
 
 function store(req, res) {
-  res.json({ message: "WIP" });
+  const { filename } = req.file;
+  const { title, director, genre, release_year, abstract } = req.body;
+
+  const storeMovieSQL = `
+  INSERT INTO movies.movies 
+  (title, director, genre, release_year, abstract, image) VALUES 
+  (?, ?, ?, ?, ?, ?);`;
+
+  connection.query(
+    storeMovieSQL,
+    [title, director, genre, release_year, abstract, filename],
+    (err, result) => {
+      const { insertId } = result;
+      res.status(201).json({ insertId });
+    },
+  );
 }
 
 function storeReview(req, res) {
@@ -68,11 +83,8 @@ function storeReview(req, res) {
   (?, ?, ?, ?);`;
 
   connection.query(storeReviewSQL, [id, name, vote, text], (err, result) => {
-    const showReviewSQL = `SELECT * FROM movies.reviews WHERE id = ?`;
-    connection.query(showReviewSQL, [result.insertId], (err, result) => {
-      const review = result[0];
-      res.json(review);
-    });
+    const { insertId } = result;
+    res.status(201).json({ insertId });
   });
 }
 
