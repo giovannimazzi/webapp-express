@@ -23,7 +23,7 @@ app.use(errorMiddleware.error500);
 
 // # SERVER START
 app.listen(process.env.APP_PORT, () => {
-  console.log(`Server environment: ${process.env.APP_Mode}`);
+  console.log(`Server environment: ${process.env.APP_MODE}`);
   console.log(
     `Server listening on ${process.env.APP_URL}:${process.env.APP_PORT}`,
   );
